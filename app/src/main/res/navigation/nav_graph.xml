@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/startUpPermissionFragment">
+
+    <fragment
+        android:id="@+id/checkOAuthFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.CheckOAuthFragment"
+        android:label="check_o_auth_fragment"
+        tools:layout="@layout/check_o_auth_fragment" >
+        <action
+            android:id="@+id/action_checkOAuthFragment_to_tipScreenFragment"
+            app:destination="@id/tipScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tipScreenFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.TipScreenFragment"
+        android:label="tip_screen_fragment"
+        tools:layout="@layout/tip_screen_fragment" >
+        <action
+            android:id="@+id/action_tipScreenFragment_to_customTipFragment2"
+            app:destination="@id/customTipFragment" />
+        <argument
+            android:name="doneButtonTouchedOnCustomTipScreen"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="percentagePickedForCustomTip"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="tipChosenFromCustomerTipScreen"
+            app:argType="float" />
+        <argument
+            android:name="tipScreenTripTotal"
+            app:argType="float" />
+    </fragment>
+    <fragment
+        android:id="@+id/customTipFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.CustomTipFragment"
+        android:label="custom_tip_fragment"
+        tools:layout="@layout/custom_tip_fragment" >
+        <action
+            android:id="@+id/action_customTipFragment_to_tipScreenFragment"
+            app:destination="@id/tipScreenFragment" />
+        <argument
+            android:name="tripTotalFromTipScreen"
+            app:argType="float" />
+    </fragment>
+    <fragment
+        android:id="@+id/startUpPermissionFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.StartUpPermissionFragment"
+        android:label="start_up_permission_fragment"
+        tools:layout="@layout/start_up_permission_fragment" >
+        <action
+            android:id="@+id/action_startUpPermissionFragment_to_checkOAuthFragment"
+            app:destination="@id/checkOAuthFragment" />
+    </fragment>
+</navigation>

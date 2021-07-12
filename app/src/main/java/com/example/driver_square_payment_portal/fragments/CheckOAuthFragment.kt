@@ -27,29 +27,19 @@ class CheckOAuthFragment : Fragment() {
         return inflater.inflate(R.layout.check_o_auth_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CheckOAuthViewModel::class.java)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProviders.of(this, ).get(CheckOAuthViewModel::class.java)
         val isSquareAuthorized = SquareHelper.getAuthStatus()
         if(!isSquareAuthorized){
             SquareHelper.reauthorizeSquare("ccsi_U_1496", this.requireActivity())
         }
-        viewModel.isSquareAuthorized()?.observe(this.viewLifecycleOwner, Observer { squareIsAuth ->
-            if(squareIsAuth){
-                toEnterEnterCardScreen()
-            }
-        })
+        toEnterEnterCardScreen()
     }
 
     //Navigation
     private fun toEnterEnterCardScreen(){
-        val navController = Navigation.findNavController(requireActivity(),
-            R.id.nav_host_fragment_container
-        )
+        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
         if (navController.currentDestination?.id == currentFragmentId){
             navController.navigate(R.id.action_checkOAuthFragment_to_tipScreenFragment)
         }

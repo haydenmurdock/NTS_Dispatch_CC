@@ -12,51 +12,10 @@ object PermissionHelper {
 
 
     fun getPermissions(activity: FragmentActivity){
-        requestMic(activity)
-        requestStorage(activity)
-        requestLocation(activity)
-        requestPhoneState(activity)
         allOtherPermissions(activity)
     }
 
-    private fun requestMic(activity: FragmentActivity) {
-        val REQUEST_RECORD_AUDIO_PERMISSION = 200
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.RECORD_AUDIO),
-                REQUEST_RECORD_AUDIO_PERMISSION
-            )
-        }
-    }
-    private fun requestStorage(activity: FragmentActivity){
-        val REQUEST_STORAGE_PERMSSION_CODE = 1
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                REQUEST_STORAGE_PERMSSION_CODE)
-        }
-    }
-    private fun requestLocation(activity: FragmentActivity) {
-        val REQUEST_FINE_LOCATION_PERMSSION_CODE = 1
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_FINE_LOCATION_PERMSSION_CODE)
-        }
-    }
-    @SuppressLint("HardwareIds")
-    private fun requestPhoneState(activity: FragmentActivity){
-        val REQUEST_PHONE_STATE_PERMSSION_CODE = 1
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.READ_PHONE_STATE),
-                REQUEST_PHONE_STATE_PERMSSION_CODE)
-        }
-    }
+
     private fun allOtherPermissions(activity: FragmentActivity){
         val REQUEST_CODE_ASK_PERMISSIONS = 1
         val REQUIRED_SDK_PERMISSIONS = arrayOf(

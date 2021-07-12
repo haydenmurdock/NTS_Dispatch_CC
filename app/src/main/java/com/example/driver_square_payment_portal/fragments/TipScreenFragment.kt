@@ -2,24 +2,31 @@ package com.example.driver_square_payment_portal.fragments
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.Navigation
+import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
+import com.example.driver_square_payment_portal.Helpers.PIMMutationHelper
+import com.example.driver_square_payment_portal.Helpers.VehicleTripArrayHolder
+import com.example.driver_square_payment_portal.Helpers.ViewHelper
 import com.example.driver_square_payment_portal.R
+import com.example.driver_square_payment_portal.internal.ClientFactory
+import com.example.driver_square_payment_portal.internal.ScopedFragment
 import com.squareup.sdk.reader.ReaderSdk
 import com.squareup.sdk.reader.checkout.*
 import com.squareup.sdk.reader.core.CallbackReference
 import com.squareup.sdk.reader.core.Result
 import com.squareup.sdk.reader.core.ResultError
 import kotlinx.android.synthetic.main.tip_screen_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.*
 
-class TipScreenFragment : Fragment() {
+class TipScreenFragment : ScopedFragment() {
     private var tripTotal = 00.00
     private var tripTotalReset = 00.00
     private var amountForSquare = 00.00
@@ -36,7 +43,7 @@ class TipScreenFragment : Fragment() {
     private var tipAmountPassedToSquare = 00.00
     private var tripTotalBackFromSquare = 00.00
     private var tipPercentPicked = 00.00
-   // private var mAWSAppSyncClient: AWSAppSyncClient? = null
+    private var mAWSAppSyncClient: AWSAppSyncClient? = null
     private var checkoutCallbackRef: CallbackReference? = null
     private var vehicleId = ""
     private var tripId:String? = null
@@ -47,11 +54,7 @@ class TipScreenFragment : Fragment() {
     private var paymentSentForSquare = false
     private val logFragment = "Tip Screen"
     private var driverId: Int? = null
-
-    companion object {
-        fun newInstance() = TipScreenFragment()
-    }
-
+    private var checkedBroadcast: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,23 +63,15 @@ class TipScreenFragment : Fragment() {
         return inflater.inflate(R.layout.tip_screen_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getArgsFromTripReview()
+        getArgsFromBroadcastSetup()
+        getArgsFromCustomTipScreen()
         updateUI()
         tripTotalReset = tripTotal
-     //   mAWSAppSyncClient = ClientFactory.getInstance(context)
-        // we will need trip number, driver Id, tripId, vehicleId
-
+        mAWSAppSyncClient = ClientFactory.getInstance(context)
         val checkoutManager = ReaderSdk.checkoutManager()
         checkoutCallbackRef = checkoutManager.addCheckoutActivityCallback(this::onCheckoutResult)
-        getArgsFromCustomTipScreen()
-
         fifteen_percent_btn.setOnTouchListener((View.OnTouchListener { v, event ->
             when(event?.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -240,12 +235,12 @@ class TipScreenFragment : Fragment() {
         }
 
 
-        //callbackViewModel.getIsTransactionComplete().observe(this.viewLifecycleOwner, Observer {transactionIsComplete ->
-        //    if(transactionIsComplete){
-         //       Log.i("Tip Screen Fragment", "The transaction is complete so going to email or text screen")
-         //       toEmailOrText()
-         //   }
-       // })
+//        callbackViewModel.getIsTransactionComplete().observe(this.viewLifecycleOwner, Observer {transactionIsComplete ->
+//            if(transactionIsComplete){
+//                Log.i("Tip Screen Fragment", "The transaction is complete so going to email or text screen")
+//                toEmailOrText()
+//            }
+//        })
     }
     private fun updateUI() {
         if(tripTotal < 10.00){
@@ -364,8 +359,9 @@ class TipScreenFragment : Fragment() {
             }
         }
     }
-    private fun getArgsFromTripReview(){
-        val args = arguments?.getFloat("tipScreenTripTotal")
+    private fun getArgsFromBroadcastSetup(){
+        val tripPayment = VehicleTripArrayHolder.getTripPaymentInfo()
+        val args = tripPayment?.pimPayAmount
         if(args != null){
             if (args < 10.00){
                 val formattedArgs = tripTotalDFUnderTen.format(args)
@@ -379,36 +375,43 @@ class TipScreenFragment : Fragment() {
                 tip_screen_trip_total_textView.text = "$$tripTotalToString"
             }
         }
+        checkedBroadcast = true
     }
     private fun getArgsFromCustomTipScreen(){
         val hasCustomTipBeingPicked = arguments?.getBoolean("doneButtonTouchedOnCustomTipScreen")
         val tripTotalBeforeTip = arguments?.getFloat("tipScreenTripTotal")
-        val tipAmount = arguments?.getFloat("tipChosenFromCustomTipScreen")
+        val tipAmount = arguments?.getFloat("tipChosenFromCustomerTipScreen")
         val hasCustomerPickedPercentage = arguments?.getBoolean("percentagePickedForCustomTip")
         val amountForSquareArgs = tripTotalBeforeTip!! + tipAmount!!.toFloat()
-        if (amountForSquare < 10.00) {
-            tripTotal = tripTotalBeforeTip.toDouble()
-            amountForSquare = amountForSquareArgs.toDouble()
-            tipAmountPassedToSquare = tipAmount.toDouble()
-            val formattedArgs = tripTotalDFUnderTen.format(amountForSquare)
-            val tripTotalToString = formattedArgs.toString()
-            tip_screen_trip_total_textView.text = "$$tripTotalToString"
-        } else {
-            tripTotal = tripTotalBeforeTip.toDouble()
-            amountForSquare = amountForSquareArgs.toDouble()
-            tipAmountPassedToSquare = tipAmount.toDouble()
-            val formattedArgs = tripTotalDF.format(amountForSquare)
-            val tripTotalToString = formattedArgs.toString()
-            tip_screen_trip_total_textView.text = "$$tripTotalToString"
-        }
-        if(hasCustomTipBeingPicked!!) {
-            tipAmountPassedToSquare = tipAmount.toDouble()
-            if(hasCustomerPickedPercentage != null && hasCustomerPickedPercentage){
-                tipPercentPicked = tipAmountPassedToSquare/amountForSquare
+        amountForSquare = tripTotalBeforeTip.toDouble() + tipAmount
+        if(tipAmount != 00.00.toFloat()){
+            if (amountForSquare < 10.00) {
+                tripTotal = tripTotalBeforeTip.toDouble()
+                amountForSquare = amountForSquareArgs.toDouble()
+                tipAmountPassedToSquare = tipAmount.toDouble()
+                val formattedArgs = tripTotalDFUnderTen.format(amountForSquare)
+                val tripTotalToString = formattedArgs.toString()
+                tip_screen_trip_total_textView.text = "$$tripTotalToString"
+            } else {
+                tripTotal = tripTotalBeforeTip.toDouble()
+                amountForSquare = amountForSquareArgs.toDouble()
+                tipAmountPassedToSquare = tipAmount.toDouble()
+                val formattedArgs = tripTotalDF.format(amountForSquare)
+                val tripTotalToString = formattedArgs.toString()
+                tip_screen_trip_total_textView.text = "$$tripTotalToString"
             }
-            squareCheckout(amountForSquare)
-            lowerAlpha()
+
+            if(hasCustomTipBeingPicked!!) {
+                tipAmountPassedToSquare = tipAmount.toDouble()
+                if(hasCustomerPickedPercentage != null && hasCustomerPickedPercentage){
+                    tipPercentPicked = tipAmountPassedToSquare/amountForSquare
+                }
+                squareCheckout(amountForSquare)
+                lowerAlpha()
+            }
         }
+
+
     }
     private fun squareCheckout(checkOutAmount: Double) {
         //Function for square
@@ -512,7 +515,6 @@ class TipScreenFragment : Fragment() {
         if(no_tip_btn != null){
             no_tip_btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.whiteTextColor))
         }
-        //callbackViewModel.setTipAmount(0.0)
     }
     private fun onCheckoutResult(result: Result<CheckoutResult, ResultError<CheckoutErrorCode>>) {
 
@@ -547,7 +549,6 @@ class TipScreenFragment : Fragment() {
                         "Usage ERROR: ${error.message}, ErrorDebug Message: ${error.debugMessage}",
                         Toast.LENGTH_LONG
                     ).show()
-                    L
                 }
                 else -> {
                     Toast.makeText(context,
@@ -561,15 +562,14 @@ class TipScreenFragment : Fragment() {
     private fun showCheckoutResult(checkoutResult: CheckoutResult) {
         val tenders = checkoutResult.tenders
         transactionDate = checkoutResult.createdAt
-       // val updatedTransactionDate = ViewHelper.formatDateUtcIso(transactionDate)
-       // val tripIdForPaymentCheck = VehicleTripArrayHolder.getTripIdForPayment()
-        val tripIdForPayment = 0.0
+        val updatedTransactionDate = ViewHelper.formatDateUtcIso(transactionDate)
+        val tripIdForPayment = VehicleTripArrayHolder.getTripPaymentInfo()?.tripId ?: ""
         for (i in tenders){
             transactionId = i.tenderId
-           // callbackViewModel.setTransactionId(transactionId)
             val cardName = i.cardDetails.card.brand.name
             cardInfo = cardName + " " + i.cardDetails.card.lastFourDigits
             tripTotalBackFromSquare = i.totalMoney.amount.toDouble()
+            VehicleTripArrayHolder.updateAmountPassedToSquareAfterPayment(tripTotalBackFromSquare)
         }
 
         if(cardInfo != "" ) {
@@ -579,7 +579,7 @@ class TipScreenFragment : Fragment() {
                 cardInfo,
                 tipPercentPicked,
                 amountForSquare,
-              //  updatedTransactionDate,
+                updatedTransactionDate,
                 transactionId,
                 tripIdForPayment)
         }
@@ -593,11 +593,13 @@ class TipScreenFragment : Fragment() {
                 "card",
                 tripIdForPayment)
         }
-     //   VehicleTripArrayHolder.updateReceiptPaymentInfo(tripIdForPayment, null, null, tipAmountPassedToSquare, tipPercentPicked, null, null, null, null, null,null)
+        VehicleTripArrayHolder.updateReceiptPaymentInfo(tripIdForPayment, null, null, tipAmountPassedToSquare, tipPercentPicked, null, null, null, null, null,null)
+
+        toEmailOrText()
     }
 
     private fun updatePaymentDetail(transactionId: String, tripNumber: Int, vehicleId: String, awsAppSyncClient: AWSAppSyncClient, paymentType: String, tripId: String){
-        launch(Dispatchers.IO) {
+       launch (Dispatchers.IO) {
             PIMMutationHelper.updatePaymentDetails(transactionId, tripNumber, vehicleId, awsAppSyncClient, paymentType, tripId)
         }
 
@@ -623,7 +625,7 @@ class TipScreenFragment : Fragment() {
     private fun updateTripTotalTextField(tripTotalEntered: Double){
         if (tripTotalEntered < 10.00){
             val formattedArgs = tripTotalDFUnderTen.format(tripTotalEntered)
-            tripTotal = formattedArgs.toDouble()
+             tripTotal= formattedArgs.toDouble()
             val tripTotalToString = formattedArgs.toString()
             if (tip_screen_trip_total_textView != null){
                 tip_screen_trip_total_textView.text = "$$tripTotalToString"
@@ -640,15 +642,16 @@ class TipScreenFragment : Fragment() {
     private fun updateTransactionInfo(tipAmt: Double, cardInfo: String, tipPercent: Double, paidAmount: Double, transactionDate: String, transactionId: String, tripId: String){
         if (!paymentSentForSquare) {
             paymentSentForSquare = true
-         //   val vehicleIdForPayment = viewModel.getVehicleID()
-           // launch(Dispatchers.IO)  {
-           //     PIMMutationHelper.pimPaymentSquareMutation(vehicleIdForPayment, tripId, tipAmt, cardInfo, tipPercent, paidAmount, transactionDate, transactionId)
-           // }
+            val vehicleId = ""
+
+            launch(Dispatchers.IO)  {
+                PIMMutationHelper.pimPaymentSquareMutation(vehicleId, tripId, tipAmt, cardInfo, tipPercent, paidAmount, transactionDate, transactionId)
+            }
         }
     }
 
     private fun toCustomTip(){
-        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_container)
+        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
         if(navController.currentDestination?.id == (R.id.tipScreenFragment)){
             val testTripTotal:Float = 0.0.toFloat()
             val action = TipScreenFragmentDirections.actionTipScreenFragmentToCustomTipFragment2(testTripTotal)
@@ -656,29 +659,15 @@ class TipScreenFragment : Fragment() {
         }
     }
 
-    private  fun toEmailOrText(){
-//        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-//        if(navController.currentDestination?.id == (R.id.tipScreenFragment)){
-//            val action = TipScreenFragmentDirections.tipFragmentToEmailorTextFragment(amountForSquare.toFloat(), "CARD")
-//                .setPaymentType("CARD").setTripTotal(amountForSquare.toFloat())
-//            navController.navigate(action)
-//        }
+    private  fun toEmailOrText() = launch(Dispatchers.Main.immediate){
+        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+        if(navController.currentDestination?.id == (R.id.tipScreenFragment)){
+            val action = TipScreenFragmentDirections.actionTipScreenFragmentToEmailOrTextFragment(tipAmountPassedToSquare.toFloat())
+                .setAmountFromSquarePayment(tipAmountPassedToSquare.toFloat())
+            navController.navigate(action)
+        }
     }
 
-    override fun onPause() {
-        super.onPause()
-        //ViewHelper.hideSystemUI(requireActivity())
-//        callbackViewModel.hasSquareTimedOut().observe(this, Observer { hasSquareTimedOut ->
-//            if (hasSquareTimedOut) {
-//                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-//                if (navController.currentDestination?.id == (R.id.tipScreenFragment)) {
-//                    val action = TipScreenFragmentDirections.backToTripReview(tripTotal.toFloat())
-//                        .setMeterOwedPrice(tripTotal.toFloat())
-//                    navController.navigate(action)
-//                }
-//            }
-//        })
-    }
 
     override fun onDestroy() {
         super.onDestroy()

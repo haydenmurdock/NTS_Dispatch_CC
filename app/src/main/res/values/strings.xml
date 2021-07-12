@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Driver_Square_Payment_Portal</string>
+    <string name="app_name">Dispatch CC</string>
+    <string name="driver_app">com.ccsi.taxidispatch</string>
 </resources>

@@ -36,6 +36,9 @@
         <argument
             android:name="tipScreenTripTotal"
             app:argType="float" />
+        <action
+            android:id="@+id/action_tipScreenFragment_to_emailOrTextFragment"
+            app:destination="@id/emailOrTextFragment" />
     </fragment>
     <fragment
         android:id="@+id/customTipFragment"
@@ -43,7 +46,7 @@
         android:label="custom_tip_fragment"
         tools:layout="@layout/custom_tip_fragment" >
         <action
-            android:id="@+id/action_customTipFragment_to_tipScreenFragment"
+            android:id="@+id/backToTipScreenFragment"
             app:destination="@id/tipScreenFragment" />
         <argument
             android:name="tripTotalFromTipScreen"
@@ -58,4 +61,69 @@
             android:id="@+id/action_startUpPermissionFragment_to_checkOAuthFragment"
             app:destination="@id/checkOAuthFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/emailOrTextFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.EmailOrTextFragment"
+        android:label="email_or_text_fragment"
+        tools:layout="@layout/email_or_text_fragment" >
+        <action
+            android:id="@+id/action_emailOrTextFragment_to_emailFragment"
+            app:destination="@id/emailFragment" />
+        <action
+            android:id="@+id/action_emailOrTextFragment_to_textMessageFragment"
+            app:destination="@id/textMessageFragment" />
+        <argument
+            android:name="amountFromSquarePayment"
+            app:argType="float" />
+        <action
+            android:id="@+id/action_emailOrTextFragment_to_thankYouFragment"
+            app:destination="@id/thankYouFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.EmailFragment"
+        android:label="EmailFragment" >
+        <action
+            android:id="@+id/action_emailFragment_to_confirmationFragment"
+            app:destination="@id/confirmationFragment" />
+        <action
+            android:id="@+id/action_emailFragment_to_thankYouFragment"
+            app:destination="@id/thankYouFragment" />
+        <action
+            android:id="@+id/action_emailFragment_to_emailOrTextFragment"
+            app:destination="@id/emailOrTextFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/textMessageFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.TextMessageFragment"
+        android:label="TextMessageFragment" >
+        <action
+            android:id="@+id/action_textMessageFragment_to_confirmationFragment"
+            app:destination="@id/confirmationFragment" />
+        <action
+            android:id="@+id/action_textMessageFragment_to_thankYouFragment"
+            app:destination="@id/thankYouFragment" />
+        <action
+            android:id="@+id/action_textMessageFragment_to_emailOrTextFragment"
+            app:destination="@id/emailOrTextFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmationFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.ConfirmationFragment"
+        android:label="ConfirmationFragment" >
+        <argument
+            android:name="emailOrPhoneNumber"
+            app:argType="string" />
+        <argument
+            android:name="receiptType"
+            app:argType="string" />
+        <argument
+            android:name="tripTotal"
+            app:argType="float" />
+    </fragment>
+    <fragment
+        android:id="@+id/thankYouFragment"
+        android:name="com.example.driver_square_payment_portal.fragments.ThankYouFragment"
+        android:label="thank_you_fragment"
+        tools:layout="@layout/thank_you_fragment" />
 </navigation>

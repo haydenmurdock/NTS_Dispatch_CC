@@ -76,17 +76,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/email_or_text_back_btn"
-        android:layout_width="79dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="24dp"
-        android:src="@drawable/ic_left_arrow_2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/email_textView"
         android:layout_width="wrap_content"

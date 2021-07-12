@@ -1,6 +1,7 @@
 package com.example.driver_square_payment_portal.Helpers
 
 import android.util.Log
+import com.example.driver_square_payment_portal.Model.ReceiptPaymentInfo
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -15,21 +16,6 @@ object ReceiptHelper {
     fun sendReceiptInfoToAWS(tripId: String, paymentMethod: String, transactionId: String, custPhoneNumber: String?, custEmail: String?, driverReceipt: Boolean){
         val receiptPaymentInfo: ReceiptPaymentInfo? =
             VehicleTripArrayHolder.getReceiptPaymentInfo(tripId)
-        LoggerHelper.writeToLog("Sending to receipt API." +
-                " tripId: $tripId," +
-                " paymentMethod: ${paymentMethod.toLowerCase()}," +
-                " transactionId: $transactionId," +
-                "custPhoneNumber: $custPhoneNumber," +
-                " pimPayAmount: ${receiptPaymentInfo?.pimPayAmount}," +
-                " owedPrice: ${receiptPaymentInfo?.owedPrice}," +
-                " tipAmt: ${receiptPaymentInfo?.tipAmt}," +
-                " tipPercent: ${receiptPaymentInfo?.tipPercent}," +
-                " airportFee: ${receiptPaymentInfo?.airPortFee}, " +
-                " discountAmt: ${receiptPaymentInfo?.discountAmt}," +
-                " toll: ${receiptPaymentInfo?.toll}," +
-                " discountPercent: ${receiptPaymentInfo?.discountPercent}," +
-                " destLat: ${receiptPaymentInfo?.destLat}, " +
-                " destLon: ${receiptPaymentInfo?.destLon}", LogEnums.RECEIPT.tag)
         val client = OkHttpClient().newBuilder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)

@@ -14,6 +14,17 @@
         android:clickable="true">
 
 
+        <ImageView
+            android:id="@+id/back_to_driver_app_from_tip_screen_btn"
+            android:layout_width="79dp"
+            android:layout_height="43dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.024"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_left_arrow_2" />
+
         <FrameLayout
             android:id="@+id/fifteen_percent_frameLayout"
             android:layout_width="171dp"
@@ -223,7 +234,6 @@
             android:id="@+id/give_tip_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:fontFamily="@font/source_sans_pro_semibold"
             android:text="Give a tip? "
             android:textAlignment="center"
@@ -233,7 +243,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.116"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/back_to_driver_app_from_tip_screen_btn" />
 
         <Button
             android:id="@+id/no_tip_btn"

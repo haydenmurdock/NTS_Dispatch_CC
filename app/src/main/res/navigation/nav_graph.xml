@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/checkOAuthFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.CheckOAuthFragment"
+        android:name="com.nts.dispatch_cc.fragments.CheckOAuthFragment"
         android:label="check_o_auth_fragment"
         tools:layout="@layout/check_o_auth_fragment" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/tipScreenFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.TipScreenFragment"
+        android:name="com.nts.dispatch_cc.fragments.TipScreenFragment"
         android:label="tip_screen_fragment"
         tools:layout="@layout/tip_screen_fragment" >
         <action
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/customTipFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.CustomTipFragment"
+        android:name="com.nts.dispatch_cc.fragments.CustomTipFragment"
         android:label="custom_tip_fragment"
         tools:layout="@layout/custom_tip_fragment" >
         <action
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/startUpPermissionFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.StartUpPermissionFragment"
+        android:name="com.nts.dispatch_cc.fragments.StartUpPermissionFragment"
         android:label="start_up_permission_fragment"
         tools:layout="@layout/start_up_permission_fragment" >
         <action
@@ -63,7 +63,7 @@
     </fragment>
     <fragment
         android:id="@+id/emailOrTextFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.EmailOrTextFragment"
+        android:name="com.nts.dispatch_cc.fragments.EmailOrTextFragment"
         android:label="email_or_text_fragment"
         tools:layout="@layout/email_or_text_fragment" >
         <action
@@ -81,7 +81,7 @@
     </fragment>
     <fragment
         android:id="@+id/emailFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.EmailFragment"
+        android:name="com.nts.dispatch_cc.fragments.EmailFragment"
         android:label="EmailFragment" >
         <action
             android:id="@+id/action_emailFragment_to_confirmationFragment"
@@ -95,7 +95,7 @@
     </fragment>
     <fragment
         android:id="@+id/textMessageFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.TextMessageFragment"
+        android:name="com.nts.dispatch_cc.fragments.TextMessageFragment"
         android:label="TextMessageFragment" >
         <action
             android:id="@+id/action_textMessageFragment_to_confirmationFragment"
@@ -109,7 +109,7 @@
     </fragment>
     <fragment
         android:id="@+id/confirmationFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.ConfirmationFragment"
+        android:name="com.nts.dispatch_cc.fragments.ConfirmationFragment"
         android:label="ConfirmationFragment" >
         <argument
             android:name="emailOrPhoneNumber"
@@ -123,7 +123,7 @@
     </fragment>
     <fragment
         android:id="@+id/thankYouFragment"
-        android:name="com.example.driver_square_payment_portal.fragments.ThankYouFragment"
+        android:name="com.nts.dispatch_cc.fragments.ThankYouFragment"
         android:label="thank_you_fragment"
         tools:layout="@layout/thank_you_fragment" />
 </navigation>

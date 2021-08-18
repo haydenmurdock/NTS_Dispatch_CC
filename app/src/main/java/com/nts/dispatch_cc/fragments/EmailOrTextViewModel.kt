@@ -1,0 +1,7 @@
+package com.nts.dispatch_cc.fragments
+
+import androidx.lifecycle.ViewModel
+
+class EmailOrTextViewModel : ViewModel() {
+    // TODO: Implement the ViewModel
+}

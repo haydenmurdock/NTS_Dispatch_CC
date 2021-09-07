@@ -22,10 +22,10 @@ import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
 import com.apollographql.apollo.GraphQLCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.nts.dispatch_cc.Helpers.LoggerHelper
-import com.nts.dispatch_cc.Helpers.ReceiptHelper
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
-import com.nts.dispatch_cc.Helpers.ViewHelper
+import com.nts.dispatch_cc.helpers.LoggerHelper
+import com.nts.dispatch_cc.helpers.ReceiptHelper
+import com.nts.dispatch_cc.helpers.VehicleTripArrayHolder
+import com.nts.dispatch_cc.helpers.ViewHelper
 import com.nts.dispatch_cc.R
 import com.nts.dispatch_cc.internal.ClientFactory
 import com.nts.dispatch_cc.internal.ScopedFragment

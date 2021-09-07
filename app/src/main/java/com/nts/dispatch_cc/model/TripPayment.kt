@@ -1,4 +1,4 @@
-package com.nts.dispatch_cc.Model
+package com.nts.dispatch_cc.model
 
 
 // we will need trip number, driver Id, tripId, vehicleId

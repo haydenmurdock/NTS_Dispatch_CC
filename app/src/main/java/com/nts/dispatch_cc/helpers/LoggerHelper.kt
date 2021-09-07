@@ -1,14 +1,10 @@
-package com.nts.dispatch_cc.Helpers
+package com.nts.dispatch_cc.helpers
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request

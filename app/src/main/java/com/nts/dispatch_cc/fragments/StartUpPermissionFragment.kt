@@ -3,7 +3,6 @@ package com.nts.dispatch_cc.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.opengl.Visibility
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -16,10 +15,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
-import com.nts.dispatch_cc.Helpers.BroadcastHelper
-import com.nts.dispatch_cc.Helpers.LoggerHelper
-import com.nts.dispatch_cc.Helpers.PermissionHelper
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
+import com.nts.dispatch_cc.helpers.BroadcastHelper
+import com.nts.dispatch_cc.helpers.LoggerHelper
+import com.nts.dispatch_cc.helpers.PermissionHelper
+import com.nts.dispatch_cc.helpers.VehicleTripArrayHolder
 import com.nts.dispatch_cc.R
 import kotlinx.android.synthetic.main.start_up_permission_fragment.*
 

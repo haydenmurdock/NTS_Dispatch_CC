@@ -6,13 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
-import com.nts.dispatch_cc.Helpers.LoggerHelper
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
-import com.nts.dispatch_cc.Helpers.ViewHelper
+import com.nts.dispatch_cc.helpers.LoggerHelper
+import com.nts.dispatch_cc.helpers.VehicleTripArrayHolder
+import com.nts.dispatch_cc.helpers.ViewHelper
 import com.nts.dispatch_cc.R
 import com.nts.dispatch_cc.internal.ScopedFragment
 import kotlinx.android.synthetic.main.email_or_text_fragment.*
-import kotlinx.android.synthetic.main.text_message_fragment.*
 import java.text.DecimalFormat
 
 class EmailOrTextFragment : ScopedFragment() {

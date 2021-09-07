@@ -3,9 +3,6 @@ package com.nts.dispatch_cc.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
-import com.nts.dispatch_cc.Model.ReceiptPaymentInfo
 
 class DriverAppReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {

@@ -1,8 +1,8 @@
-package com.nts.dispatch_cc.Helpers
+package com.nts.dispatch_cc.helpers
 
 import android.app.Activity
 import android.util.Log
-import com.nts.dispatch_cc.Model.ReceiptPaymentInfo
+import com.nts.dispatch_cc.model.ReceiptPaymentInfo
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request

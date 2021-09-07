@@ -17,7 +17,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.Navigation
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
+import com.nts.dispatch_cc.helpers.VehicleTripArrayHolder
 import com.nts.dispatch_cc.R
 import kotlinx.android.synthetic.main.custom_tip_fragment.*
 import java.text.DecimalFormat

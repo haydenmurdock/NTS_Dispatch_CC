@@ -1,15 +1,14 @@
 package com.nts.dispatch_cc.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
-import com.nts.dispatch_cc.Helpers.LoggerHelper
+import com.nts.dispatch_cc.helpers.LoggerHelper
 import com.nts.dispatch_cc.R
-import com.nts.dispatch_cc.Helpers.SquareHelper
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
+import com.nts.dispatch_cc.helpers.SquareHelper
+import com.nts.dispatch_cc.helpers.VehicleTripArrayHolder
 import com.nts.dispatch_cc.internal.ScopedFragment
 import com.squareup.sdk.reader.ReaderSdk
 import kotlinx.coroutines.Dispatchers

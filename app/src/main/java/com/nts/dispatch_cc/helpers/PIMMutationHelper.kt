@@ -1,4 +1,4 @@
-package com.nts.dispatch_cc.Helpers
+package com.nts.dispatch_cc.helpers
 
 import android.util.Log
 import com.amazonaws.amplify.generated.graphql.PimPaymentMadeMutation
@@ -58,7 +58,7 @@ object PIMMutationHelper {
     ) {
         val updatePaymentInput =
             SavePaymentDetailsInput.builder().paymentId(transactionId).tripNbr(tripNumber)
-                .vehicleId(vehicleId).paymentMethod(paymentMethod).tripId(tripId).build()
+                .vehicleId(vehicleId).paymentMethod(paymentMethod).paymentSource("CC").tripId(tripId).build()
 
         appSyncClient.mutate(
             SavePaymentDetailsMutation.builder().parameters(updatePaymentInput).build()

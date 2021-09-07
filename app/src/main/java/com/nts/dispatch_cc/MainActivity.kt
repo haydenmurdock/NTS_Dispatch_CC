@@ -11,10 +11,10 @@ import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.nts.dispatch_cc.Helpers.LoggerHelper
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
-import com.nts.dispatch_cc.Helpers.ViewHelper
-import com.nts.dispatch_cc.Model.ReceiptPaymentInfo
+import com.nts.dispatch_cc.helpers.LoggerHelper
+import com.nts.dispatch_cc.helpers.VehicleTripArrayHolder
+import com.nts.dispatch_cc.helpers.ViewHelper
+import com.nts.dispatch_cc.model.ReceiptPaymentInfo
 import com.nts.dispatch_cc.receivers.DriverAppReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

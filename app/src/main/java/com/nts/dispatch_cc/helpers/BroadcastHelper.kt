@@ -1,4 +1,4 @@
-package com.nts.dispatch_cc.Helpers
+package com.nts.dispatch_cc.helpers
 
 import android.app.Activity
 import android.content.Intent
@@ -7,7 +7,7 @@ import kotlin.system.exitProcess
 
 
 object BroadcastHelper {
-    val packageName = "com.ccsi.taxidispatch"
+    private const val packageName = "com.ccsi.taxidispatch"
 
     fun sendBroadcast(activity: Activity) {
         val i = activity.packageManager.getLaunchIntentForPackage(packageName)
@@ -35,7 +35,7 @@ object BroadcastHelper {
         }
     }
 
-    fun closeApp(activity: Activity){
+   private fun closeApp(activity: Activity){
         activity.finish()
         exitProcess(0)
     }

@@ -10,8 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
-import com.nts.dispatch_cc.Helpers.*
-import com.nts.dispatch_cc.Model.PaymentInfo
+import com.nts.dispatch_cc.helpers.*
+import com.nts.dispatch_cc.model.PaymentInfo
 import com.nts.dispatch_cc.R
 import com.nts.dispatch_cc.internal.ClientFactory
 import com.nts.dispatch_cc.internal.ScopedFragment
@@ -54,7 +54,6 @@ class TipScreenFragment : ScopedFragment() {
     private var transactionDate: Date? = null
     private var transactionId = ""
     private var paymentSentForSquare = false
-    //private val logFragment = "Tip Screen"
     private var driverId: Int? = null
     private var checkedBroadcast: Boolean = false
     private var payment: Double? = null
@@ -78,8 +77,7 @@ class TipScreenFragment : ScopedFragment() {
         vehicleId = VehicleTripArrayHolder.getTripPaymentInfo()?.vehicleId ?: ""
         tripNumber = VehicleTripArrayHolder.getTripPaymentInfo()?.tripNumber ?: 0
 
-        val checkoutManager = ReaderSdk.checkoutManager()
-        checkoutCallbackRef = checkoutManager.addCheckoutActivityCallback(this::onCheckoutResult)
+        checkCheckoutManagerRef()
         fifteen_percent_btn.setOnTouchListener((View.OnTouchListener { v, event ->
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -420,9 +418,8 @@ class TipScreenFragment : ScopedFragment() {
     }
     private fun squareCheckout(checkOutAmount: Double) {
         //Function for square
-        //callbackViewModel.setAmountForSquareDisplay(checkOutAmount)
+        checkCheckoutManagerRef()
         val p = checkOutAmount * 100.00
-        //Used Math.round() in the past. updated to kotlin function
         val checkOutTotal = p.roundToLong()
         val amountMoney = Money(checkOutTotal, CurrencyCode.current())
         val parametersBuilder = CheckoutParameters.newBuilder(amountMoney)
@@ -441,6 +438,15 @@ class TipScreenFragment : ScopedFragment() {
         val checkoutManager = ReaderSdk.checkoutManager()
         checkoutManager.startCheckoutActivity(requireContext(), parametersBuilder.build())
 
+    }
+
+    private fun checkCheckoutManagerRef(){
+        //With usage errors, we make the checkoutCallbackRef clear. We need to double check before we take a payment
+        if(checkoutCallbackRef == null){
+            LoggerHelper.writeToLog("checkoutCallbackRef was null at time of payment. Added new checkoutCallbackRef before payment", "SQUARE", requireActivity())
+            val checkoutManager = ReaderSdk.checkoutManager()
+            checkoutCallbackRef = checkoutManager.addCheckoutActivityCallback(this::onCheckoutResult)
+        }
     }
     private fun lowerAlpha() {
         val alpha = 0.5f
@@ -539,15 +545,10 @@ class TipScreenFragment : ScopedFragment() {
         }
     }
     private fun onCheckoutResult(result: Result<CheckoutResult, ResultError<CheckoutErrorCode>>) {
-
         if (result.isSuccess) {
-            //LoggerHelper.writeToLog("$logFragment,  Square payment result: Success", LogEnums.PAYMENT.tag)
             val checkoutResult = result.successValue
-
             showCheckoutResult(checkoutResult)
-           // ViewHelper.hideSystemUI(requireActivity())
         } else {
-           // ViewHelper.hideSystemUI(requireActivity())
             val error = result.error
             LoggerHelper.writeToLog("Error == ${error.code}, ${error.message}", "SQUARE", this.requireActivity())
             raiseAlphaUI()
@@ -576,6 +577,7 @@ class TipScreenFragment : ScopedFragment() {
                         "Usage ERROR: ${error.message}, ErrorDebug Message: ${error.debugMessage}",
                         Toast.LENGTH_LONG
                     ).show()
+                    checkoutCallbackRef?.clear()
                 }
                 else -> {
                     Toast.makeText(
@@ -585,7 +587,6 @@ class TipScreenFragment : ScopedFragment() {
                     ).show()
                 }
             }
-
         }
     }
     private fun showCheckoutResult(checkoutResult: CheckoutResult) {
@@ -752,13 +753,8 @@ class TipScreenFragment : ScopedFragment() {
             navController.navigate(action)
         }
     }
-
-
     override fun onDestroy() {
         super.onDestroy()
         checkoutCallbackRef?.clear()
     }
-
-
-
 }

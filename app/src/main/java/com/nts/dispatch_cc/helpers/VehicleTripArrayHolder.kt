@@ -1,10 +1,10 @@
-package com.nts.dispatch_cc.Helpers
+package com.nts.dispatch_cc.helpers
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.nts.dispatch_cc.Model.PaymentInfo
-import com.nts.dispatch_cc.Model.ReceiptPaymentInfo
-import com.nts.dispatch_cc.Model.TripPayment
+import com.nts.dispatch_cc.model.PaymentInfo
+import com.nts.dispatch_cc.model.ReceiptPaymentInfo
+import com.nts.dispatch_cc.model.TripPayment
 
 object VehicleTripArrayHolder {
     private  var receiptPaymentInfo: ReceiptPaymentInfo? = null

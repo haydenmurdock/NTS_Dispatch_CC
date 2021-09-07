@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
-import com.nts.dispatch_cc.Helpers.BroadcastHelper
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
+import com.nts.dispatch_cc.helpers.BroadcastHelper
+import com.nts.dispatch_cc.helpers.VehicleTripArrayHolder
 import com.nts.dispatch_cc.R
 import com.nts.dispatch_cc.internal.ClientFactory
 import com.nts.dispatch_cc.internal.ScopedFragment

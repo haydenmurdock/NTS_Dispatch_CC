@@ -1,4 +1,4 @@
-package com.nts.dispatch_cc.Helpers
+package com.nts.dispatch_cc.helpers
 
 import android.app.Activity
 import android.view.View
@@ -8,12 +8,12 @@ import java.util.*
 object ViewHelper {
 
     fun formatDateUtcIso(date: Date?): String {
-        if (date == null) return ""
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US)
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"))
-        val formattedDateString = sdf.format(date)
-        val fS = formattedDateString.removeSuffix("+0000")
-        return fS.plus("Z")
+            if (date == null) return ""
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US)
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            val formattedDateString = sdf.format(date)
+            val fS = formattedDateString.removeSuffix("+0000")
+            return fS.plus("Z")
     }
 
     fun hideSystemUI(activity: Activity) {

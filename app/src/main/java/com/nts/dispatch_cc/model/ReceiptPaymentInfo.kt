@@ -1,4 +1,4 @@
-package com.nts.dispatch_cc.Model
+package com.nts.dispatch_cc.model
 
 data class ReceiptPaymentInfo(var tripId: String,
                               var pimPayAmount: Double,

@@ -1,10 +1,12 @@
-package com.nts.dispatch_cc.Helpers
+package com.nts.dispatch_cc.helpers
 
 import android.app.Activity
-import androidx.annotation.MainThread
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import com.nts.dispatch_cc.Model.AuthCode
+import com.nts.dispatch_cc.model.AuthCode
 import com.google.gson.Gson
+import com.nts.dispatch_cc.model.MAC
+import com.nts.dispatch_cc.internal.ModelPreferences
 import com.squareup.sdk.reader.ReaderSdk
 import okhttp3.Call
 import okhttp3.Callback
@@ -12,20 +14,36 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 import java.lang.Error
+import java.time.LocalTime
+import java.util.*
 
 object SquareHelper {
 
-   private var isSquareAuthorized = false
-   private var isSquareAuthorizedMLD: MutableLiveData<Boolean>? = null
+    private var isSquareAuthorized = false
+    private var isSquareAuthorizedMLD: MutableLiveData<Boolean>? = null
     private var SquareAuthErrorMLD: MutableLiveData<String>? = null
+    private const val macKey = "MOBILE_AUTH_CODE"
+    private const val logTag = "SQUARE"
 
 
-
-    fun getAuthStatus():Boolean {
-        isSquareAuthorized = ReaderSdk.authorizationManager().authorizationState.isAuthorized
-        isSquareAuthorizedMLD?.postValue(isSquareAuthorized)
-        return isSquareAuthorized
+    fun saveMAC(id: String, context: Context, activity: Activity){
+        val lastMAC = getLastMAC(context)
+        val isExpired = lastMAC?.isMACExpired(LocalTime.now()) ?: true
+        LoggerHelper.writeToLog("Saving MAC. Checking to see if it's expired. Last MAC expired: $isExpired", logTag, activity)
+        if(!isExpired){
+            val mac = MAC(id, LocalTime.now(),activity)
+            ModelPreferences(context).putObject(macKey, mac)
+        }
     }
+
+   private fun getLastMAC(context: Context):MAC? {
+        return ModelPreferences(context).getObject(macKey, MAC::class.java)
+    }
+
+   private fun isMACExpired(context: Context):Boolean {
+        return getLastMAC(context)?.isMACExpired(LocalTime.now()) ?: true
+    }
+
 
     fun reauthorizeSquare(vehicleId: String?, mainActivity: Activity){
         if(vehicleId == null){
@@ -36,19 +54,28 @@ object SquareHelper {
                 ReaderSdk.authorizationManager().deauthorize()
             }
         }
-        if(vehicleId.isNotEmpty()){
-            getAuthorizationCode(vehicleId, mainActivity)
+        val isLastMACExpired = isMACExpired(mainActivity.applicationContext)
+        if(isLastMACExpired){
+            LoggerHelper.writeToLog("MAC was expired or didn't exist. Getting NEW MAC for authorization.", logTag, mainActivity)
+            getMobileAuthCode(vehicleId, mainActivity)
+        } else {
+            val lastMACid = getLastMAC(mainActivity.applicationContext)?.getId() ?: ""
+            LoggerHelper.writeToLog("Last mac id was less than 1 hour old. Using OLD MAC for authorization. Id: $lastMACid", logTag, mainActivity)
+            if(lastMACid != ""){
+                mainActivity.runOnUiThread {
+                    ReaderSdk.authorizationManager().authorize(lastMACid)
+                }
+            } else {
+                LoggerHelper.writeToLog("Last mac id was less than 1 hour old, but MAC wasn't formatted correctly. Getting new MAC", logTag, mainActivity)
+                getMobileAuthCode(vehicleId, mainActivity)
+            }
         }
     }
 
-    fun deauthorizeSquare(activity: Activity){
-       activity.runOnUiThread {
-            ReaderSdk.authorizationManager().deauthorize()
-        }
-    }
 
-    private fun getAuthorizationCode(vehicleId: String, mainActivity: Activity) {
-        val url = "https://i8xgdzdwk5.execute-api.us-east-2.amazonaws.com/prod/CheckOAuthToken?vehicleId=$vehicleId"
+    private fun getMobileAuthCode(vehicleId: String, mainActivity: Activity) {
+        val dateTime = ViewHelper.formatDateUtcIso(Date())
+        val url = "https://i8xgdzdwk5.execute-api.us-east-2.amazonaws.com/prod/CheckOAuthToken?vehicleId=$vehicleId&source=DispatchCC&eventTimeStamp=2021-08-26T$dateTime&extraInfo=SquareHelper"
         val client = OkHttpClient()
         val request = Request.Builder()
             .url(url)
@@ -85,6 +112,7 @@ object SquareHelper {
     }
 
     private fun onAuthorizationCodeRetrieved(authorizationCode: String, mainActivity: Activity) {
+        saveMAC(authorizationCode, mainActivity.applicationContext, mainActivity)
         mainActivity.runOnUiThread {
             ReaderSdk.authorizationManager().authorize(authorizationCode)
         }

@@ -1,4 +1,4 @@
-package com.nts.dispatch_cc.Helpers
+package com.nts.dispatch_cc.helpers
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -26,10 +26,7 @@ object PermissionHelper {
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.RECEIVE_BOOT_COMPLETED,
             Manifest.permission.BLUETOOTH_ADMIN,
-            Manifest.permission.BLUETOOTH,
-            Manifest.permission.READ_SMS,
-            Manifest.permission.READ_PHONE_NUMBERS,
-            Manifest.permission.READ_PHONE_STATE
+            Manifest.permission.BLUETOOTH
         )
 
         val missingPermissions = ArrayList<String>()

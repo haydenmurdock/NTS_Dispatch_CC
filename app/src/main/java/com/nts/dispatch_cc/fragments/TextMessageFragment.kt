@@ -21,9 +21,9 @@ import com.amazonaws.amplify.generated.graphql.UpdateTripMutation
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
 import com.apollographql.apollo.GraphQLCall
 import com.apollographql.apollo.exception.ApolloException
-import com.nts.dispatch_cc.Helpers.LoggerHelper
-import com.nts.dispatch_cc.Helpers.ReceiptHelper
-import com.nts.dispatch_cc.Helpers.VehicleTripArrayHolder
+import com.nts.dispatch_cc.helpers.LoggerHelper
+import com.nts.dispatch_cc.helpers.ReceiptHelper
+import com.nts.dispatch_cc.helpers.VehicleTripArrayHolder
 import com.nts.dispatch_cc.R
 import com.nts.dispatch_cc.fragments.viewModels.SettingsKeyboardViewModel
 import com.nts.dispatch_cc.internal.ClientFactory
@@ -34,7 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import type.SavePaymentDetailsInput
 import type.UpdateTripInput
-import java.util.*
 
 class TextMessageFragment : ScopedFragment(){
     var vehicleId = ""
@@ -488,7 +487,7 @@ class TextMessageFragment : ScopedFragment(){
         val imm =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
-       com.nts.dispatch_cc.Helpers.ViewHelper.hideSystemUI(requireActivity())
+       com.nts.dispatch_cc.helpers.ViewHelper.hideSystemUI(requireActivity())
     }
     private fun sendTextReceipt(){
 
